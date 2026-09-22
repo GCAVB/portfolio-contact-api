@@ -95,8 +95,31 @@ function requireAdminAuth(
           'Token inválido o expirado'
       });
   }
+}export function errorHandler(error, req, res, next) {
+  const safeLog = {
+    severity: 'ERROR',
+    message:
+      typeof error?.stack === 'string'
+        ? error.stack
+        : `${error?.name || 'Error'}: ${error?.message || 'Unknown error'}`,
+    errorName: error?.name,
+    errorCode: error?.code,
+    route: req.originalUrl,
+    method: req.method,
+    hasFiles: Boolean(req.files?.length),
+    stage: res.locals.formularioStage || 'unknown'
+  };
+
+  // No agregar error.input, DATABASE_URL, req.body ni el objeto error completo.
+  console.error(JSON.stringify(safeLog));
+
+  res.status(500).json({
+    ok: false,
+    message: 'Error interno del servidor'
+  });
 }
 
 module.exports = {
-  requireAdminAuth
+  requireAdminAuth,
+  errorHandler
 };
