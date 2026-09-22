@@ -1,0 +1,32 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/api-repo/api:$COMMIT_SHA'
+      - '.'
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/api-repo/api:$COMMIT_SHA'
+
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'api'
+      - '--image'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/api-repo/api:$COMMIT_SHA'
+      - '--region'
+      - 'us-central1'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--port'
+      - '8080'
+      - '--project'
+      - '$PROJECT_ID'
+
+images:
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/api-repo/api:$COMMIT_SHA'
