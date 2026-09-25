@@ -1,4 +1,5 @@
 const express = require('express');
+
 const router = express.Router();
 
 const targets = {
@@ -23,7 +24,7 @@ const targets = {
   }
 };
 
-router.get('/go/:profile'), (request, response) => {
+router.get('/:profile', (request, response) => {
   const { profile } = request.params;
   const config = targets[profile];
 
@@ -60,17 +61,13 @@ router.get('/go/:profile'), (request, response) => {
   ) {
     return response.status(500).json({
       ok: false,
-      message: 'Configuración inválida.'  
-      });
+      message: 'Configuración inválida.'
+    });
   }
 
-  response.setHeader(
-    'Cache-Control',
-    'no-store'
-  );
+  response.setHeader('Cache-Control', 'no-store');
 
-  return response.redirect(
-    302,
-    url.toString()
-  );
-};
+  return response.redirect(302, url.toString());
+});
+
+module.exports = router;

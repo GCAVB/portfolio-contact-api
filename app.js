@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 
-const goRouter = require('./routes/go');
+const goRouter = require('./src/routes/go');
 
 const cors = require('cors');
 
@@ -70,7 +70,7 @@ app.disable( 'x-powered-by');
 
 app.set( 'trust proxy',  1);
 
-app.use(goRouter);
+app.use('/go', goRouter);
 
 app.use(  helmet());
 
