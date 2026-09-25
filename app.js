@@ -1,48 +1,30 @@
 require('dotenv').config();
 
-const express =
-  require('express');
+const express = require('express');
 
-const cors =
-  require('cors');
+const goRouter = require('./routes/go');
 
-const helmet =
-  require('helmet');
+const cors = require('cors');
 
-const compression =
-  require('compression');
+const helmet = require('helmet');
 
-const morgan =
-  require('morgan');
+const compression = require('compression');
 
-const formRoutes =
-  require('./src/routes/form.routes');
+const morgan = require('morgan');
 
-const authRoutes =
-  require('./src/routes/auth.routes');
+const formRoutes = require('./src/routes/form.routes');
 
-const adminRoutes =
-  require('./src/routes/admin.routes');
+const authRoutes = require('./src/routes/auth.routes');
 
-const {
-  errorMiddleware
-} =
-  require('./src/middleware/error.middleware');
+const adminRoutes = require('./src/routes/admin.routes');
 
-const {
-  publicRateLimit
-} =
-  require('./src/middleware/rateLimit.middleware');
+const { errorMiddleware} = require('./src/middleware/error.middleware');
 
-const {
-  checkDatabaseConnection
-} =
-  require('./src/config/db');
+const { publicRateLimit} = require('./src/middleware/rateLimit.middleware');
 
-const {
-  validateEnv
-} =
-  require('./src/config/env');
+const { checkDatabaseConnection} = require('./src/config/db');
+
+const { validateEnv} = require('./src/config/env');
 
 validateEnv();
 
@@ -84,22 +66,15 @@ const allowedOrigins =
 const app =
   express();
 
-app.disable(
-  'x-powered-by'
-);
+app.disable( 'x-powered-by');
 
-app.set(
-  'trust proxy',
-  1
-);
+app.set( 'trust proxy',  1);
 
-app.use(
-  helmet()
-);
+app.use(goRouter);
 
-app.use(
-  compression()
-);
+app.use(  helmet());
+
+app.use(  compression());
 
 app.use(
   morgan(
