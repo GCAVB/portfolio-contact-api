@@ -1,60 +1,46 @@
+const express = require('express');
+const router = express.Router();
+
 const targets = {
   github: {
     env: 'GITHUB_PROFILE_URL',
-    hosts: ['github.com']
+    hosts: ['github.com', 'www.github.com']
   },
 
   linkedin: {
     env: 'LINKEDIN_PROFILE_URL',
-    hosts: [
-      'linkedin.com',
-      'www.linkedin.com'
-    ]
+    hosts: ['linkedin.com', 'www.linkedin.com']
   },
 
   atlantida360: {
     env: 'GITHUB_ATLANTIDA360_URL',
-    hosts: ['github.com']
+    hosts: ['github.com', 'www.github.com']
   },
 
   orderManagement: {
     env: 'GITHUB_ORDER_MANAGEMENT_URL',
-    hosts: ['github.com']
+    hosts: ['github.com', 'www.github.com']
   }
 };
 
-module.exports = function handler(
-  request,
-  response
-) {
-  const {
-    profile
-  } = request.query;
-
-  const config =
-    targets[profile];
+router.get('/go/:profile'), (request, response) => {
+  const { profile } = request.params;
+  const config = targets[profile];
 
   if (!config) {
-    return response
-      .status(404)
-      .json({
-        ok: false,
-        message:
-          'Perfil no disponible.'
-      });
+    return response.status(404).json({
+      ok: false,
+      message: 'Perfil no disponible.'
+    });
   }
 
-  const profileUrl =
-    process.env[config.env];
+  const profileUrl = process.env[config.env];
 
   if (!profileUrl) {
-    return response
-      .status(404)
-      .json({
-        ok: false,
-        message:
-          'Perfil no disponible.'
-      });
+    return response.status(404).json({
+      ok: false,
+      message: 'Perfil no disponible.'
+    });
   }
 
   let url;
@@ -62,27 +48,19 @@ module.exports = function handler(
   try {
     url = new URL(profileUrl);
   } catch {
-    return response
-      .status(500)
-      .json({
-        ok: false,
-        message:
-          'Configuración inválida.'
-      });
+    return response.status(500).json({
+      ok: false,
+      message: 'Configuración inválida.'
+    });
   }
 
   if (
     url.protocol !== 'https:' ||
-    !config.hosts.includes(
-      url.hostname
-    )
+    !config.hosts.includes(url.hostname)
   ) {
-    return response
-      .status(500)
-      .json({
-        ok: false,
-        message:
-          'Configuración inválida.'
+    return response.status(500).json({
+      ok: false,
+      message: 'Configuración inválida.'  
       });
   }
 
